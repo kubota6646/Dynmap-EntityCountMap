@@ -55,7 +55,11 @@ dependencies {
 // Process resources – replace ${project.version} inside plugin.yml
 // ---------------------------------------------------------------------------
 tasks.processResources {
-    val props = mapOf("project.version" to project.version)
+    // Gradle's expand() uses Groovy's GStringTemplateEngine.
+    // In that engine, ${project.version} resolves "project" as a binding variable
+    // and then accesses ".version" on it.  A flat key "project.version" (with a
+    // literal dot) is NOT found; a nested map is required.
+    val props = mapOf("project" to mapOf("version" to project.version.toString()))
     inputs.properties(props)
     filteringCharset = "UTF-8"
     filesMatching("plugin.yml") {

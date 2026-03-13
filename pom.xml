@@ -72,8 +72,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <!-- <release> is preferred over <source>/<target> in Java 9+ -->
+                    <release>${java.version}</release>
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>

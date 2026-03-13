@@ -16,7 +16,10 @@ import org.dynmap.DynmapAPI;
  */
 public class EntityCountMapPlugin extends JavaPlugin {
 
+    private static final int MAX_DYNMAP_RETRIES = 10;
+
     private DynmapHook dynmapHook;
+    private int dynmapRetryCount = 0;
 
     @Override
     public void onEnable() {
@@ -46,8 +49,6 @@ public class EntityCountMapPlugin extends JavaPlugin {
      * yet available (Dynmap is still starting), this method reschedules itself
      * up to {@link #MAX_DYNMAP_RETRIES} times before giving up.
      */
-    private static final int MAX_DYNMAP_RETRIES = 10;
-    private int dynmapRetryCount = 0;
 
     private void initializeDynmap() {
         Plugin rawPlugin = Bukkit.getPluginManager().getPlugin("dynmap");

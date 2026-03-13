@@ -109,7 +109,7 @@ public class DynmapHook {
                 + "max-entities=" + maxEntities + ".");
     }
 
-    /** Cancels the update task and removes all markers we own. */
+    /** Cancels the update task and removes all markers and the marker set itself. */
     public void cleanup() {
         if (updateTask != null) {
             updateTask.cancel();
@@ -117,6 +117,14 @@ public class DynmapHook {
         }
         if (markerSet != null) {
             clearAllMarkers();
+            // Delete the marker set so the empty layer does not remain visible in
+            // Dynmap after this plugin is disabled or reloaded.
+            try {
+                markerSet.deleteMarkerSet();
+            } catch (Exception e) {
+                plugin.getLogger().warning("Failed to delete Dynmap marker set: " + e.getMessage());
+            }
+            markerSet = null;
         }
     }
 
@@ -277,6 +285,29 @@ public class DynmapHook {
         fillOpacity      = plugin.getConfig().getDouble("fill-opacity",  0.45);
         layerPriority    = plugin.getConfig().getInt("layer-priority",   10);
         worldWhitelist   = plugin.getConfig().getStringList("worlds");
+
+        // --- Validate values to prevent runtime errors ---
+
+        // update-interval must be at least 1 tick; 0 or negative would cause
+        // BukkitScheduler to throw an IllegalArgumentException.
+        if (updateInterval < 1) {
+            plugin.getLogger().warning("update-interval must be >= 1; resetting to 200.");
+            updateInterval = 200;
+        }
+
+        // max-entities must be >= 1.  A value of 0 causes NaN during float division
+        // (entityCount / (float) maxEntities) inside calculateColor(), which breaks
+        // all colour output silently.
+        if (maxEntities < 1) {
+            plugin.getLogger().warning("max-entities must be >= 1; resetting to 50.");
+            maxEntities = 50;
+        }
+
+        // fill-opacity must be within [0.0, 1.0] as required by the Dynmap MarkerAPI.
+        if (fillOpacity < 0.0 || fillOpacity > 1.0) {
+            plugin.getLogger().warning("fill-opacity must be between 0.0 and 1.0; resetting to 0.45.");
+            fillOpacity = 0.45;
+        }
     }
 
     // -----------------------------------------------------------------------
