@@ -46,7 +46,7 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
 
     // Dynmap API
-    compileOnly("us.dynmap:dynmap-api:3.7-beta-3") {
+    compileOnly("us.dynmap:dynmap-api:3.8") {
         isTransitive = false
     }
 }
