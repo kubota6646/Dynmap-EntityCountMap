@@ -63,6 +63,25 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!--
+          Dynmap Core API – provides DynmapCommonAPI, MarkerAPI, MarkerSet, AreaMarker, etc.
+          These classes live in DynmapCoreAPI, which is published as a separate artifact.
+          The dynmap-api JAR published to repo.mikeprimm.com is the unshaded thin JAR and
+          does NOT include DynmapCoreAPI classes, so we must declare this dependency explicitly.
+        -->
+        <dependency>
+            <groupId>us.dynmap</groupId>
+            <artifactId>DynmapCoreAPI</artifactId>
+            <version>${dynmap.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>

@@ -45,8 +45,15 @@ dependencies {
     // Spigot and Paper without modification.
     compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
 
-    // Dynmap API
+    // Dynmap API – provides the Bukkit-facing DynmapAPI interface
     compileOnly("us.dynmap:dynmap-api:3.8") {
+        isTransitive = false
+    }
+    // Dynmap Core API – provides DynmapCommonAPI, MarkerAPI, MarkerSet, AreaMarker, etc.
+    // These classes live in DynmapCoreAPI, which is published as a separate artifact.
+    // The dynmap-api JAR published to repo.mikeprimm.com is the unshaded thin JAR and
+    // does NOT include DynmapCoreAPI classes, so we must declare this dependency explicitly.
+    compileOnly("us.dynmap:DynmapCoreAPI:3.8") {
         isTransitive = false
     }
 }
