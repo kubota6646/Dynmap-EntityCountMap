@@ -54,6 +54,24 @@ layer-priority: 10
 worlds: []
 ```
 
+## コマンド
+
+| コマンド | エイリアス | 説明 |
+|---|---|---|
+| `/entitycountmap reload` | `/ecm reload` | `config.yml` を再読み込みし、Dynmap レイヤーを再起動します |
+
+### リロードの動作
+
+1. 現在の更新タスクをキャンセルし、全マーカーと Dynmap マーカーセットを削除
+2. `plugins/Dynmap-EntityCountMap/config.yml` をディスクから再読み込み
+3. 新しい設定で Dynmap レイヤーを再初期化
+
+## パーミッション
+
+| パーミッションノード | デフォルト | 説明 |
+|---|---|---|
+| `entitycountmap.reload` | OP のみ | `/entitycountmap reload` の実行を許可します |
+
 ## ビルド方法
 
 ### Gradle（推奨）
