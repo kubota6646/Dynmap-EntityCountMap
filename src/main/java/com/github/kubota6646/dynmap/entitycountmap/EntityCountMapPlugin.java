@@ -1,9 +1,16 @@
 package com.github.kubota6646.dynmap.entitycountmap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.dynmap.DynmapAPI;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Dynmap-EntityCountMap
@@ -14,7 +21,7 @@ import org.dynmap.DynmapAPI;
  *
  * <p>Compatible with Minecraft 1.21.x (Spigot / Paper) and Dynmap 3.x.</p>
  */
-public class EntityCountMapPlugin extends JavaPlugin {
+public class EntityCountMapPlugin extends JavaPlugin implements CommandExecutor, TabCompleter {
 
     private static final int MAX_DYNMAP_RETRIES = 10;
 
@@ -24,6 +31,12 @@ public class EntityCountMapPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+
+        // Register /entitycountmap (alias /ecm) command
+        if (getCommand("entitycountmap") != null) {
+            getCommand("entitycountmap").setExecutor(this);
+            getCommand("entitycountmap").setTabCompleter(this);
+        }
 
         // Delay Dynmap initialisation by 1 s to ensure Dynmap has fully started.
         Bukkit.getScheduler().runTaskLater(this, this::initializeDynmap, 20L);
@@ -38,6 +51,58 @@ public class EntityCountMapPlugin extends JavaPlugin {
             dynmapHook = null;
         }
         getLogger().info("Dynmap-EntityCountMap disabled.");
+    }
+
+    // -----------------------------------------------------------------------
+    // Command handling
+    // -----------------------------------------------------------------------
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            if (!sender.hasPermission("entitycountmap.reload")) {
+                sender.sendMessage("§cYou don't have permission to reload Dynmap-EntityCountMap.");
+                return true;
+            }
+            reload();
+            sender.sendMessage("§aDynmap-EntityCountMap reloaded.");
+            return true;
+        }
+
+        sender.sendMessage("§eUsage: /" + label + " reload");
+        return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 1) {
+            if ("reload".startsWith(args[0].toLowerCase())) {
+                return Collections.singletonList("reload");
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    // -----------------------------------------------------------------------
+    // Reload
+    // -----------------------------------------------------------------------
+
+    /**
+     * Cleans up the current {@link DynmapHook}, reloads the config from disk,
+     * and re-initialises the Dynmap integration.  Safe to call from any thread
+     * that can schedule tasks on the main thread (including the main thread
+     * itself).
+     */
+    private void reload() {
+        if (dynmapHook != null) {
+            dynmapHook.cleanup();
+            dynmapHook = null;
+        }
+        reloadConfig();
+        dynmapRetryCount = 0;
+        // Brief delay to let Dynmap react in case it was also reloaded
+        Bukkit.getScheduler().runTaskLater(this, this::initializeDynmap, 20L);
+        getLogger().info("Dynmap-EntityCountMap reloading…");
     }
 
     // -----------------------------------------------------------------------

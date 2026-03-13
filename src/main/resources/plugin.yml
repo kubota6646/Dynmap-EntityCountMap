@@ -10,3 +10,15 @@ website: https://github.com/kubota6646/Dynmap-EntityCountMap
 # Dynmap must be loaded before this plugin starts
 softdepend:
   - dynmap
+
+commands:
+  entitycountmap:
+    description: Dynmap-EntityCountMap management commands
+    usage: /entitycountmap <reload>
+    aliases:
+      - ecm
+
+permissions:
+  entitycountmap.reload:
+    description: Allows reloading the Dynmap-EntityCountMap plugin
+    default: op
