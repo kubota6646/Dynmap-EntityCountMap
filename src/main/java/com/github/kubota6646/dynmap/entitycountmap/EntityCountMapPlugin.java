@@ -12,7 +12,7 @@ import org.dynmap.DynmapAPI;
  * to the number of entities present.  The colour gradient runs from blue
  * (very few entities) through green → yellow → orange → red (many entities).</p>
  *
- * <p>Compatible with Minecraft 1.21.x (Paper) and Dynmap 3.x.</p>
+ * <p>Compatible with Minecraft 1.21.x (Spigot / Paper) and Dynmap 3.x.</p>
  */
 public class EntityCountMapPlugin extends JavaPlugin {
 

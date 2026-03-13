@@ -25,19 +25,25 @@ tasks.withType<JavaCompile>().configureEach {
 // Repositories
 // ---------------------------------------------------------------------------
 repositories {
-    // Paper API (Minecraft 1.21.x)
-    maven("https://repo.papermc.io/repository/maven-public/")
+    // Spigot API – works on both Spigot and Paper servers
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    // Bukkit dependency required by spigot-api
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
     // Dynmap API
     maven("https://repo.mikeprimm.com/")
     mavenCentral()
+    // Local Maven repo (.m2) – useful when using BuildTools offline
+    mavenLocal()
 }
 
 // ---------------------------------------------------------------------------
 // Dependencies  (all "compileOnly" – provided by the server at runtime)
 // ---------------------------------------------------------------------------
 dependencies {
-    // Paper API for Minecraft 1.21.4 (compatible with 1.21.x including 1.21.8)
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    // Spigot API for Minecraft 1.21.4 (compatible with 1.21.x including 1.21.8).
+    // Compiling against spigot-api guarantees the plugin runs on both
+    // Spigot and Paper without modification.
+    compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
 
     // Dynmap API
     compileOnly("us.dynmap:dynmap-api:3.7-beta-3") {

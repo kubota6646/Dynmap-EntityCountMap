@@ -43,7 +43,9 @@ public class DynmapHook {
     private static final String MARKER_SET_LABEL = "Entity Count";
 
     // Chunk corner indices for AreaMarker (clockwise from NW)
-    private static final int CORNERS = 4;
+    private static final int CORNERS    = 4;
+    // Minecraft chunk width/depth in blocks
+    private static final int CHUNK_SIZE = 16;
 
     private final EntityCountMapPlugin plugin;
     private final DynmapAPI dynmapAPI;
@@ -208,10 +210,10 @@ public class DynmapHook {
         double[] z = new double[CORNERS];
 
         // Clockwise from NW corner: NW → SW → SE → NE
-        x[0] = chunkX * 16.0;        z[0] = chunkZ * 16.0;
-        x[1] = chunkX * 16.0;        z[1] = (chunkZ + 1) * 16.0;
-        x[2] = (chunkX + 1) * 16.0;  z[2] = (chunkZ + 1) * 16.0;
-        x[3] = (chunkX + 1) * 16.0;  z[3] = chunkZ * 16.0;
+        x[0] = chunkX * CHUNK_SIZE;               z[0] = chunkZ * CHUNK_SIZE;
+        x[1] = chunkX * CHUNK_SIZE;               z[1] = (chunkZ + 1) * CHUNK_SIZE;
+        x[2] = (chunkX + 1) * CHUNK_SIZE;         z[2] = (chunkZ + 1) * CHUNK_SIZE;
+        x[3] = (chunkX + 1) * CHUNK_SIZE;         z[3] = chunkZ * CHUNK_SIZE;
 
         return markerSet.createAreaMarker(
                 markerId, label, false, worldName, x, z, false);
